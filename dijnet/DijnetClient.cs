@@ -14,9 +14,13 @@ namespace dijnet
         private HttpClient httpClient; // TODO: dispose?
         private int waitSeconds;
         private string baseUrl;
+        private string userName;
+        private string passsword;
 
-        public DijnetClient(int waitSeconds = 2)
+        public DijnetClient(string userName, string passsword, int waitSeconds = 2)
         {
+            this.userName = userName;
+            this.passsword = passsword;
             this.waitSeconds = waitSeconds;
             this.baseUrl = "https://www.dijnet.hu/";
 
@@ -44,8 +48,8 @@ namespace dijnet
             var url = GetUrl("ekonto/login/login_check_ajax");
 
             var formData = new List<KeyValuePair<string, string>>();
-            formData.Add(new KeyValuePair<string, string>("username", "nemethb_"));
-            formData.Add(new KeyValuePair<string, string>("password", "oyZ8zDF7D2faOtFMKcfb"));
+            formData.Add(new KeyValuePair<string, string>("username", userName));
+            formData.Add(new KeyValuePair<string, string>("password", passsword));
             var content = new FormUrlEncodedContent(formData);
 
             var response = httpClient.PostAsync(url, content).Result;
@@ -128,7 +132,7 @@ namespace dijnet
         {
             Sleep();
 
-            var url = GetUrl("ekonto/control/szamla_select?vfw_coll=szamla_list&vfw_rowid={rowId}&exp=K");
+            var url = GetUrl($"ekonto/control/szamla_select?vfw_coll=szamla_list&vfw_rowid={rowId}&exp=K");
 
             var response = httpClient.GetAsync(url).Result;
             var responseContent = response.Content.ReadAsStringAsync().Result;
